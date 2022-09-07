@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.usermanagementapp.bindings.LoginForm;
+import com.demo.usermanagementapp.bindings.UserRegForm;
 import com.demo.usermanagementapp.entities.CityMasterEntity;
 import com.demo.usermanagementapp.entities.CountryMasterEntity;
 import com.demo.usermanagementapp.entities.StateMasterEntity;
@@ -16,6 +19,8 @@ import com.demo.usermanagementapp.repositories.CityRepository;
 import com.demo.usermanagementapp.repositories.CountryRepository;
 import com.demo.usermanagementapp.repositories.StateRepository;
 import com.demo.usermanagementapp.repositories.UserAccountRepository;
+
+import net.bytebuddy.utility.RandomString;
 
 
 
@@ -78,6 +83,26 @@ public class UserServiceImpl implements UserServiceI {
 		}
 		return cityMap;
 	}
+
+
+	@Override
+	public boolean saveUser(UserRegForm userRegForm) {
+
+		userRegForm.setAccStatus("LOCKED");
+		userRegForm.setPassword(generateRandomPassword());
+		UserAccountEntity userAccountEntity = new UserAccountEntity();
+		BeanUtils.copyProperties(userRegForm, userAccountEntity);
+		UserAccountEntity save = userAccountRepository.save(userAccountEntity);
+		if(save != null) {
+			// send mail
+			return true;
+		}
+		return false;
+	}
 	
+	private String generateRandomPassword() {
+		String randomPassword = RandomStringUtils.randomAlphanumeric(6);
+		return randomPassword;
+	}
 
 }

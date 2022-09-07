@@ -33,5 +33,7 @@ public class UserRegForm {
 	private Integer cityId;
 
 	private String accStatus;
+	
+	private String password;
 
 }
