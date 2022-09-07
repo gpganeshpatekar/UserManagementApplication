@@ -29,6 +29,12 @@ public class UserController {
 		return new ResponseEntity<Map<Integer,String>>(states,HttpStatus.OK);
 	}
 	
+	@GetMapping("/cities/{stateId}")
+	public ResponseEntity<Map<Integer, String>> cities(@PathVariable Integer stateId){
+		Map<Integer, String> cities = userServiceI.getCities(stateId);
+		return new ResponseEntity<Map<Integer,String>>(cities,HttpStatus.OK);
+	}
+	
 	
 	
 

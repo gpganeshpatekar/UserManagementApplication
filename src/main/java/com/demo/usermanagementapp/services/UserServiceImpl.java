@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.usermanagementapp.bindings.LoginForm;
+import com.demo.usermanagementapp.entities.CityMasterEntity;
 import com.demo.usermanagementapp.entities.CountryMasterEntity;
 import com.demo.usermanagementapp.entities.StateMasterEntity;
 import com.demo.usermanagementapp.entities.UserAccountEntity;
@@ -66,5 +67,17 @@ public class UserServiceImpl implements UserServiceI {
 		}
 		return stateMap;
 	}
+
+
+	@Override
+	public Map<Integer, String> getCities(Integer stateId) {
+		List<CityMasterEntity> cities = cityRepository.findByStateId(stateId);
+		Map<Integer, String> cityMap = new HashMap<Integer,String>();
+		for(CityMasterEntity cme : cities) {
+			cityMap.put(cme.getCityId(), cme.getCityName());
+		}
+		return cityMap;
+	}
+	
 
 }
