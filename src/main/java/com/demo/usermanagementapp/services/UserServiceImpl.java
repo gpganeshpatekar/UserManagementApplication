@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.demo.usermanagementapp.bindings.LoginForm;
 import com.demo.usermanagementapp.entities.CountryMasterEntity;
+import com.demo.usermanagementapp.entities.StateMasterEntity;
 import com.demo.usermanagementapp.entities.UserAccountEntity;
 import com.demo.usermanagementapp.repositories.CityRepository;
 import com.demo.usermanagementapp.repositories.CountryRepository;
@@ -56,9 +57,14 @@ public class UserServiceImpl implements UserServiceI {
 		return countryMap;
 	}
 	
-	public Map<Integer, String> getStates(){
-		
-		return null;
+	@Override
+	public Map<Integer, String> getStates(Integer countryId){
+		List<StateMasterEntity> states = stateRepository.findByCountryId(countryId);
+		Map<Integer, String> stateMap = new HashMap<Integer, String>();
+		for(StateMasterEntity sme : states) {
+			stateMap.put(sme.getStateId(), sme.getStateName());
+		}
+		return stateMap;
 	}
 
 }

@@ -11,6 +11,6 @@ public interface UserServiceI {
 	
 	public Map<Integer, String> getCountries();
 	
-	
+	public Map<Integer, String> getStates(Integer countryId);
 
 }
