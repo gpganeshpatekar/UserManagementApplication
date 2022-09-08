@@ -20,5 +20,7 @@ public interface UserServiceI {
 	public boolean saveUser(UserRegForm userRegForm);
 	
 	public boolean unLockAccount(UnlockAccountForm unlockAccountForm);
+	
+	public String forgotPassword(String email);
 
 }

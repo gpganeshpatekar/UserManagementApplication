@@ -124,4 +124,17 @@ public class UserServiceImpl implements UserServiceI {
 		return false;
 	}
 
+
+	@Override
+	public String forgotPassword(String email) {
+		UserAccountEntity user = userAccountRepository.findByEmail(email);
+		if(user!=null) {
+			//	sent mail
+			return "Success";
+		}else {
+			return "Failed";
+		}
+		
+	}
+
 }
