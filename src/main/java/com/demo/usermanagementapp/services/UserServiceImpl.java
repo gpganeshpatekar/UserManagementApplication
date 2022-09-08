@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.demo.usermanagementapp.bindings.LoginForm;
+import com.demo.usermanagementapp.bindings.UnlockAccountForm;
 import com.demo.usermanagementapp.bindings.UserRegForm;
 import com.demo.usermanagementapp.entities.CityMasterEntity;
 import com.demo.usermanagementapp.entities.CountryMasterEntity;
@@ -103,6 +104,24 @@ public class UserServiceImpl implements UserServiceI {
 	private String generateRandomPassword() {
 		String randomPassword = RandomStringUtils.randomAlphanumeric(6);
 		return randomPassword;
+	}
+
+
+	@Override
+	public boolean unLockAccount(UnlockAccountForm unlockAccountForm) {
+		String email = unlockAccountForm.getEmail();
+		String tempPassword = unlockAccountForm.getTempPassword();
+		
+		UserAccountEntity user = userAccountRepository.findByEmailAndPassword(email, tempPassword);
+		if(user !=null) {
+			user.setAccStatus("UNLOCKED");
+			user.setPassword(unlockAccountForm.getNewPassword());
+			userAccountRepository.save(user);
+			return true;
+		}else {
+			
+		}
+		return false;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.demo.usermanagementapp.bindings;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,8 @@ public class UserRegForm {
 	
 	private String email;
 	
+	private String password;
+	
 	private long phno;
 	
 	private LocalDate dob;
@@ -34,6 +37,5 @@ public class UserRegForm {
 
 	private String accStatus;
 	
-	private String password;
 
 }

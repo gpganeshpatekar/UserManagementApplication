@@ -10,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,10 +48,12 @@ public class UserAccountEntity {
 	private Integer cityId;
 	@Column(name = "ACC_STATUS")
 	private String accStatus;
+	@CreationTimestamp
 	@Column(name = "CREATED_DATE",updatable = false)
 	private LocalDateTime createDate;
-	@Column(name = "UPDATED_DATE")
+	@UpdateTimestamp
+	@Column(name = "UPDATED_DATE",insertable = false)
 	private LocalDateTime updateDate;
-	@Column(name = "USER_PASSWORD",insertable = false)
+	@Column(name = "USER_PASSWORD")
 	private String password;
 }

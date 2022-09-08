@@ -11,13 +11,12 @@ import com.demo.usermanagementapp.bindings.LoginForm;
 import com.demo.usermanagementapp.services.UserServiceI;
 
 @RestController
-
 public class LoginController {
 	
 	@Autowired
 	private UserServiceI userServiceI;
 	
-	@GetMapping("/login")
+	@GetMapping(value="/login")
 	public ResponseEntity<String> loginCheck(@RequestBody LoginForm loginForm){
 		String loginCheck = userServiceI.loginCheck(loginForm);
 		return new ResponseEntity<String>(loginCheck,HttpStatus.OK);
