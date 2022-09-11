@@ -15,7 +15,7 @@ public class UnlockAccountController {
 	@Autowired
 	private UserServiceI userServiceI;
 	
-	@PostMapping("/unLockAcc")
+	@PostMapping("/unlockAcc")
 	public String unLockAccount(@RequestBody UnlockAccountForm unlockAccountForm) {
 		boolean unLockAccount = userServiceI.unLockAccount(unlockAccountForm);
 		if(unLockAccount) {

@@ -1,8 +1,16 @@
 package com.demo.usermanagementapp.services;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +28,7 @@ import com.demo.usermanagementapp.repositories.CityRepository;
 import com.demo.usermanagementapp.repositories.CountryRepository;
 import com.demo.usermanagementapp.repositories.StateRepository;
 import com.demo.usermanagementapp.repositories.UserAccountRepository;
+import com.demo.usermanagementapp.utils.EmailUtils;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -36,7 +45,8 @@ public class UserServiceImpl implements UserServiceI {
 	private StateRepository stateRepository;
 	@Autowired
 	private CityRepository cityRepository;
-	
+	@Autowired
+	private EmailUtils emailUtils;
 
 	@Override
 	public String loginCheck(LoginForm loginForm) {
@@ -96,11 +106,48 @@ public class UserServiceImpl implements UserServiceI {
 		UserAccountEntity save = userAccountRepository.save(userAccountEntity);
 		if(save != null) {
 			// send mail
+			String subject = "Please check Your Mail To Unlock Account";
+			String body = getUserRegEmailBody(userRegForm);
+			emailUtils.sendMail(userRegForm.getEmail(), subject, body);
 			return true;
 		}
 		return false;
 	}
 	
+	// method for mail configuration to unlock account
+	
+	private String getUserRegEmailBody(UserRegForm userRegForm){
+		StringBuffer sb = new StringBuffer();
+		String filename = "/UserManagementApplication/UNLOCK-ACC-EMAIL-BODY-TEMPLATE.txt";
+		List<String> lines = new ArrayList();
+		BufferedReader br;
+		try {
+			br = Files.newBufferedReader(Paths.get(filename));
+			lines = br.lines().collect(Collectors.toList());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		lines.forEach(line -> {
+			if(line.contains("{FNAME}")) {
+				line.replace("{FNAME}", userRegForm.getFname());
+			}
+			if(line.contains("{LNAME}")) {
+				line.replace("{LNAME}", userRegForm.getLname());
+			}
+			if(line.contains("{TEMP-PWD}")) {
+				line.replace("{TEMP-PWD}", userRegForm.getPassword());
+			}
+			if(line.contains("{EMAIL}")) {
+				line.replace("{EMAIL}", userRegForm.getEmail());
+			}
+			sb.append(line);
+		});
+		return lines.toString();
+		
+	// method for generating random password for new user	
+	}
 	private String generateRandomPassword() {
 		String randomPassword = RandomStringUtils.randomAlphanumeric(6);
 		return randomPassword;
@@ -126,15 +173,51 @@ public class UserServiceImpl implements UserServiceI {
 
 
 	@Override
-	public String forgotPassword(String email) {
+	public String forgotPassword(String email){
 		UserAccountEntity user = userAccountRepository.findByEmail(email);
 		if(user!=null) {
-			//	sent mail
+			String subject = "Password is sent to you email id, Check your mail";
+			String body = getForgotPasswordEmail(user);
+			emailUtils.sendMail(email, subject, body);
 			return "Success";
 		}else {
 			return "Failed";
 		}
 		
 	}
+	
+	// method for forgot password mail configuration
+	
+	private String getForgotPasswordEmail(UserAccountEntity userRegForm){
+		StringBuffer sb = new StringBuffer();
+		String filename = "/UserManagementApplication/RECOVER-PASS-EMAIL-BODY-TEMPLATE.txt";
+		List<String> lines = new ArrayList<>();
+		BufferedReader br;
+		try {
+			br = Files.newBufferedReader(Paths.get(filename));
+			lines = br.lines().collect(Collectors.toList());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		lines.forEach(line -> {
+			if(line.contains("{FNAME}")) {
+				line.replace("{FNAME}", userRegForm.getFname());
+			}
+			if(line.contains("{LNAME}")) {
+				line.replace("{LNAME}", userRegForm.getLname());
+			}
+			if(line.contains("{PWD}")) {
+				line.replace("{PWD}", userRegForm.getPassword());
+			}
+			
+			sb.append(line);
+		});
+		return lines.toString();
+		
+	}
+	
+	
 
 }

@@ -1,5 +1,7 @@
 package com.demo.usermanagementapp.controllers;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,7 @@ public class ForgotPasswordRestController {
 	private UserServiceI userServiceI;
 	
 	@PostMapping("/forgotPassowrd/{email}")
-	public String forgotPassword(@PathVariable("email") String email) {
+	public String forgotPassword(@PathVariable("email") String email) throws IOException {
 		
 		String forgotPassword = userServiceI.forgotPassword(email);
 		return forgotPassword;
