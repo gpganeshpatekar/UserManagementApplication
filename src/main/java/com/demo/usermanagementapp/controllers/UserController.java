@@ -13,12 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.usermanagementapp.bindings.UserRegForm;
 import com.demo.usermanagementapp.services.UserServiceI;
+import com.demo.usermanagementapp.utils.AppConstants;
+import com.demo.usermanagementapp.utils.AppProps;
 
 @RestController
 public class UserController {
 	
 	@Autowired
 	private UserServiceI userServiceI;
+	
+	@Autowired
+	private AppProps appProps;
 	
 	@GetMapping("/countries")
 	public ResponseEntity<Map<Integer, String>> countries(){
@@ -43,10 +48,10 @@ public class UserController {
 		
 		boolean saveUser = userServiceI.saveUser(userRegFrom);
 		if(saveUser) {
-			String saveSuccess = "User Saved Successfully.. Check Your Email For Unlock Account..";
+			String saveSuccess = AppConstants.SAVE_SUCCESS ;
 			return new ResponseEntity<String>(saveSuccess,HttpStatus.CREATED);
 		}else {
-			String saveUnsuccess = "User Not Saved Successfully";
+			String saveUnsuccess = AppConstants.SAVE_UNSUCCESS;
 			return new ResponseEntity<String>(saveUnsuccess,HttpStatus.BAD_REQUEST);
 		}
 		

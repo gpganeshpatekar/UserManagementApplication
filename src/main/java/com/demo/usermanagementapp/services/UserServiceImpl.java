@@ -28,6 +28,8 @@ import com.demo.usermanagementapp.repositories.CityRepository;
 import com.demo.usermanagementapp.repositories.CountryRepository;
 import com.demo.usermanagementapp.repositories.StateRepository;
 import com.demo.usermanagementapp.repositories.UserAccountRepository;
+import com.demo.usermanagementapp.utils.AppConstants;
+import com.demo.usermanagementapp.utils.AppProps;
 import com.demo.usermanagementapp.utils.EmailUtils;
 
 import net.bytebuddy.utility.RandomString;
@@ -47,19 +49,22 @@ public class UserServiceImpl implements UserServiceI {
 	private CityRepository cityRepository;
 	@Autowired
 	private EmailUtils emailUtils;
-
+	@Autowired
+	private AppProps appProps;
+	
 	@Override
 	public String loginCheck(LoginForm loginForm) {
 		UserAccountEntity userAccountEntity = userAccountRepository.findByEmailAndPassword(loginForm.getEmail(), loginForm.getPassword());
+		Map<String, String> messages = appProps.getMessages();
 		if(userAccountEntity != null) {
 			String accStatus = userAccountEntity.getAccStatus();
-			if(accStatus.equals("LOCKED")) {
-				return "Your Account Is Locked";
+			if(accStatus.equals(AppConstants.LOCKED)) {
+				return AppConstants.ACCOUNT_LOCKED;
 			}else {
-				return "Login successful Welcome to Bikkad IT";
+				return /* AppConstants.LOGIN_SUCCESS */ messages.get("loginSucces");
 			}
 		}else {
-			return "Invalid Creditionals.. ";
+			return AppConstants.INVALID_CRED;
 		}
 	}
 
@@ -99,14 +104,14 @@ public class UserServiceImpl implements UserServiceI {
 	@Override
 	public boolean saveUser(UserRegForm userRegForm) {
 
-		userRegForm.setAccStatus("LOCKED");
+		userRegForm.setAccStatus(AppConstants.LOCKED);
 		userRegForm.setPassword(generateRandomPassword());
 		UserAccountEntity userAccountEntity = new UserAccountEntity();
 		BeanUtils.copyProperties(userRegForm, userAccountEntity);
 		UserAccountEntity save = userAccountRepository.save(userAccountEntity);
 		if(save != null) {
 			// send mail
-			String subject = "Please check Your Mail To Unlock Account";
+			String subject = AppConstants.UNLOCK_CHECK_MAIL;/* "Please check Your Mail To Unlock Account"; */
 			String body = getUserRegEmailBody(userRegForm);
 			emailUtils.sendMail(userRegForm.getEmail(), subject, body);
 			return true;
@@ -118,7 +123,7 @@ public class UserServiceImpl implements UserServiceI {
 	
 	private String getUserRegEmailBody(UserRegForm userRegForm){
 		StringBuffer sb = new StringBuffer();
-		String filename = "/UserManagementApplication/UNLOCK-ACC-EMAIL-BODY-TEMPLATE.txt";
+		String filename = "UNLOCK-ACC-EMAIL-BODY-TEMPLATE.txt";
 		List<String> lines = new ArrayList();
 		BufferedReader br;
 		try {
@@ -161,7 +166,7 @@ public class UserServiceImpl implements UserServiceI {
 		
 		UserAccountEntity user = userAccountRepository.findByEmailAndPassword(email, tempPassword);
 		if(user !=null) {
-			user.setAccStatus("UNLOCKED");
+			user.setAccStatus(AppConstants.UNLOCKED);
 			user.setPassword(unlockAccountForm.getNewPassword());
 			userAccountRepository.save(user);
 			return true;
@@ -176,7 +181,7 @@ public class UserServiceImpl implements UserServiceI {
 	public String forgotPassword(String email){
 		UserAccountEntity user = userAccountRepository.findByEmail(email);
 		if(user!=null) {
-			String subject = "Password is sent to you email id, Check your mail";
+			String subject = AppConstants.RESET_CHECK_MAIL;/*"Password is sent to you email id, Check your mail"*/
 			String body = getForgotPasswordEmail(user);
 			emailUtils.sendMail(email, subject, body);
 			return "Success";
@@ -190,7 +195,7 @@ public class UserServiceImpl implements UserServiceI {
 	
 	private String getForgotPasswordEmail(UserAccountEntity userRegForm){
 		StringBuffer sb = new StringBuffer();
-		String filename = "/UserManagementApplication/RECOVER-PASS-EMAIL-BODY-TEMPLATE.txt";
+		String filename = "RECOVER-PASS-EMAIL-BODY-TEMPLATE.txt";
 		List<String> lines = new ArrayList<>();
 		BufferedReader br;
 		try {

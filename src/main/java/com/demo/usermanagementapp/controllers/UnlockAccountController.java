@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.usermanagementapp.bindings.UnlockAccountForm;
 import com.demo.usermanagementapp.services.UserServiceI;
+import com.demo.usermanagementapp.utils.AppConstants;
+import com.demo.usermanagementapp.utils.AppProps;
 
 @RestController
 public class UnlockAccountController {
@@ -15,13 +17,16 @@ public class UnlockAccountController {
 	@Autowired
 	private UserServiceI userServiceI;
 	
+	@Autowired
+	private AppProps appProps;
+	
 	@PostMapping("/unlockAcc")
 	public String unLockAccount(@RequestBody UnlockAccountForm unlockAccountForm) {
 		boolean unLockAccount = userServiceI.unLockAccount(unlockAccountForm);
 		if(unLockAccount) {
-			return "Account Unlock";
+			return AppConstants.ACCOUNT_UNLOCKED;
 		}else {
-			return "Failed To Unlcok Account";
+			return AppConstants.UNLOCKE_FAILED;
 		}
 	}
 

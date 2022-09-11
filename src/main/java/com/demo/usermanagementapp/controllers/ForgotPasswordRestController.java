@@ -16,7 +16,7 @@ public class ForgotPasswordRestController {
 	private UserServiceI userServiceI;
 	
 	@PostMapping("/forgotPassowrd/{email}")
-	public String forgotPassword(@PathVariable("email") String email) throws IOException {
+	public String forgotPassword(@PathVariable String email){
 		
 		String forgotPassword = userServiceI.forgotPassword(email);
 		return forgotPassword;

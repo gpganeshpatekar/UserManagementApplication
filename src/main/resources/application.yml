@@ -25,7 +25,7 @@ spring:
     host : gmail.smtp.com
     port : 587
     username : gpganeshpatekar@gmail.com
-    password : bkosfellwwddtsam
+    password : 
     properties :
       mail :
         smtp :
@@ -34,3 +34,20 @@ spring:
             enable : true
     protocol: smtp
     test-connection: false
+    
+  app:
+    messages:
+      #userServiceImpl messages
+      acountLocked : Your Account is Locked
+      loginSuccess : Login successful.. Welcome To Bikkad IT
+      invalidCreditionals : Creditionals Are Invalid
+
+      checkMailToUnlock : Please check Your Mail To Unlock Account
+      restPassMail : Password is sent to you email id, Check your mail
+
+      #UserController
+      saveSuccess : User Saved Successfully.. Check Your Email For Unlock Account..
+      saveUnsuccess : User Not Saved Successfully
+      #UnlcokAccountController
+      unlockAccount : Account Unlock
+      failedToUnlock : Failed To Unlcok Account
